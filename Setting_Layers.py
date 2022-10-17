@@ -18,14 +18,14 @@ def setLayers(n, l_i):
                     "==========  1st Layer - Optical substrate  ==========\n")
             d.append(1)
             material.append((int(input(f"\n1 - BK7   2 - Silica   3 - N-F2   4 - Synthetic sapphire(Al2O3)"
-                                        f"\n5 - SFL6  6 - FK51A    7 - N-SF14 8 - Acrylic SUVT "
+                                        f"\n5 - SF10  6 - FK51A    7 - N-SF14 8 - Acrylic SUVT "
                                         f"\n9 - Other  "
                                     f"\n\nMaterial -> "))))
             index_ref.append(set_index(material[layer], l_i))
         else:
             print(f"\n==========            {layer+1}st Layer            ==========\n")
             material.append((int(input(f"\n 1 - BK7     2 - Silica      3 - N-F2       4 - Synthetic sapphire(Al2O3) "
-                                       f"\n 5 - SFL6    6 - FK51A       7 - N-SF14     8 - Acrylic SUVT"
+                                       f"\n 5 - SF10    6 - FK51A       7 - N-SF14     8 - Acrylic SUVT"
                                        f"\n 9 - PVA    10 - Glycerin   11 - Quartz    12 - Aluminium"
                                        f"\n13 - Gold   14 - Silver     15 - Copper    16 - Water (RI = 1.33)"
                                        f"\n17 - Air    18 - LiF        19 - Cytop     20 - Other\n\nMaterial -> "))))
