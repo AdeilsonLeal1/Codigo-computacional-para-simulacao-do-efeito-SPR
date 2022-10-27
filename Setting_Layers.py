@@ -36,7 +36,7 @@ def setLayers(n, l_i):
     return d, index_ref
 
 
-def setAnalyte(n):
+def setAnalyte(n, analyte):
     analyte_list = []   # Array with the variations in the analyte
     print("\n=====================================================\n"
             "==========  Define Analyte Characteristics  =========\n"
@@ -45,7 +45,7 @@ def setAnalyte(n):
     d_na = float(input("\nRefractive index variation step (eg. delta_na = 0.005 RIU): "))
     
     for i in range(n):
-        analyte_list.append((1.33 + i*d_na))
+        analyte_list.append((analyte + i*d_na))
 
     return analyte_list
 

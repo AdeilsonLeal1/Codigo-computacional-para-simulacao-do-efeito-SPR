@@ -61,7 +61,7 @@ if mod_int == 1:
     n_subs = int(
         input("\nHow many substances to analyze in the recipe?\n >> "))
 
-    list_analyte = sl.setAnalyte(n_subs)
+    list_analyte = sl.setAnalyte(n_subs,ref_index[-1])
 
     for i in range(n_subs):
         r_TM = []      # Local variable that temporarily stores reflectivity values for each of the interactions
