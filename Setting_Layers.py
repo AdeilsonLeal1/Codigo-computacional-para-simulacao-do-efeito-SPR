@@ -1,6 +1,10 @@
 ##########     Setting_Layers     ##########
 # module that includes the functions needed to build the layers of the structure
-# setLayers -> sets the material for each layer
+# setLayers  -> sets the material for each layer
+# setAnalyte -> method that calculates the variation in the analyte
+# set_index  -> method that calculates the refractive index
+# set_index_custom  -> method that returns a user-entered index of refraction
+
 from cmath import sqrt
 from numpy import interp, real, imag
 
@@ -9,23 +13,23 @@ def setLayers(layer):
 
     if layer == 0:
         print("\n=====================================================\n"
-                "==========    Set Layers Characteristics   ==========\n"
-                "=====================================================\n\n"
-                "==========  1st Layer - Optical substrate  ==========\n")
+              "==========    Set Layers Characteristics   ==========\n"
+              "=====================================================\n\n"
+              "==========  1st Layer - Optical substrate  ==========\n")
         d = 1
         material = int(input(f"\n1 - BK7   2 - Silica   3 - N-F2   4 - Synthetic sapphire(Al2O3)"
-                                    f"\n5 - SF10  6 - FK51A    7 - N-SF14 8 - Acrylic SUVT "
-                                    f"\n9 - Other - (Custom only in AIM mode)  "
-                                    f"\n\nMaterial -> "))
+                             f"\n5 - SF10  6 - FK51A    7 - N-SF14 8 - Acrylic SUVT "
+                             f"\n9 - Other - (Custom only in AIM mode)  "
+                             f"\n\nMaterial -> "))
     else:
         print(
             f"\n==========            {layer+1}st Layer            ==========\n")
-        material= int(input(f"\n 1 - BK7     2 - Silica      3 - N-F2       4 - Synthetic sapphire(Al2O3) "
-                                    f"\n 5 - SF10    6 - FK51A       7 - N-SF14     8 - Acrylic SUVT"
-                                    f"\n 9 - PVA    10 - Glycerin   11 - Quartz    12 - Aluminium"
-                                    f"\n13 - Gold   14 - Silver     15 - Copper    16 - Water (RI = 1.33)"
-                                    f"\n17 - Air    18 - LiF        19 - Cytop     20 - Other - (Custom only in AIM mode)\n\nMaterial -> "))
-        
+        material = int(input(f"\n 1 - BK7     2 - Silica      3 - N-F2       4 - Synthetic sapphire(Al2O3) "
+                             f"\n 5 - SF10    6 - FK51A       7 - N-SF14     8 - Acrylic SUVT"
+                             f"\n 9 - PVA    10 - Glycerin   11 - Quartz    12 - Aluminium"
+                             f"\n13 - Gold   14 - Silver     15 - Copper    16 - Water (RI = 1.33)"
+                             f"\n17 - Air    18 - LiF        19 - Cytop     20 - Other - (Custom only in AIM mode)\n\nMaterial -> "))
+
         d = float(input("Thickness (nm): ")) * 1e-9
 
     return d, material
@@ -199,5 +203,5 @@ def set_index(material, wi):
 def set_index_custom():
     id_real = float(input(f"Custom refractive index:\n    * Real part: -> "))
     id_imaginary = float(input(f"    * Imaginary part: -> "))
-                 
+
     return complex(id_real, id_imaginary)
