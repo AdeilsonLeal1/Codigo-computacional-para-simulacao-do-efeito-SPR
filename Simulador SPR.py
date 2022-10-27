@@ -7,7 +7,6 @@ import numpy as np
 import os
 import Setting_Layers as sl
 import Reflectivity as ref
-import matplotlib.pyplot as plt
 import tools
 
 ACF = (pi/180)  # Angle Conversion Factor.
@@ -15,7 +14,11 @@ ACF = (pi/180)  # Angle Conversion Factor.
 mod_int = nan   # Interrogation mode
 lambda_i = nan  # Incident wavelength
 theta_i = nan   # Angle of incidence
+thickness = []  # Thickness of each layer
+material = []   # Material of each layer
 R_Tm = []       # Stores lists with reflectivity curves for each of the interactions
+resonance_point = nan   # Variable that stores the SPR resonance point
+ref_index = []  # Refractive index of de layers
 
 # screen cleaning
 if os.name == 'nt':
@@ -56,49 +59,44 @@ if mod_int == 1:
     n_layers = int(
         input("\nSet the number of layers in your structure:\n     N = "))
 
-    d, ref_index = sl.setLayers(n_layers, lambda_i)
+    for layer in range(n_layers):
+        
+        d, m = sl.setLayers(layer)  # Sets the thickness and material for each layer
+        thickness.append(d)
+        material.append(m)
 
-    n_subs = int(
-        input("\nHow many substances to analyze in the recipe?\n >> "))
+        if layer == 0:
+            if material[layer] == 9:
+                ref_index.append(sl.set_index_custom())
+            else:
+                ref_index.append(sl.set_index(material[layer],lambda_i))
+        else:
+            if material[layer] == 20:
+                ref_index.append(sl.set_index_custom())
+            else:
+                ref_index.append(sl.set_index(material[layer],lambda_i))
 
-    list_analyte = sl.setAnalyte(n_subs,ref_index[-1])
+
+    #n_subs = int(input("\nAnalyze sensitivity for how many interactions?\n >> "))
+    n_subs = 1
+
+    #list_analyte = sl.setAnalyte(n_subs,ref_index[-1])
 
     for i in range(n_subs):
         r_TM = []      # Local variable that temporarily stores reflectivity values for each of the interactions
 
-        ref_index[-1] = complex(list_analyte[i])
+        #ref_index[-1] = complex(list_analyte[i])
 
         for t in range(len(theta_i)):
-            r_TM.append(ref.Reflectivity(n_layers, d, ref_index, theta_i[t], lambda_i,))
+            r_TM.append(ref.Reflectivity(
+                n_layers, thickness, ref_index, theta_i[t], lambda_i,))
 
-
-
+        resonance_point = tools.Point_SPR(r_TM, theta_i, mod_int)
 
         R_Tm.append(r_TM)
 
-        print(f"d = {d}\nRefractive Index = {ref_index}")
-
-    y = 'Angle'
-    c = 'Degrees'
-    n = chr(952)
-    ax_x = theta_i / ACF
-
-    fig0, ax_TM = plt.subplots()
-    ax_TM.plot(ax_x, (R_Tm[0]))
-    ax_TM.set_title("Reflectivity vs. Angle of Incidence", loc='center', pad='6')
-    ax_TM.set(xlabel=f'Incidence {y} ({c})', ylabel='Reflectivity')
-    ax_TM.grid()
-    ax_TM.set_yticks(np.arange(0, 1.20, 0.20))
-
-    fig1, ax_TM2 = plt.subplots()
-    for i in range(n_subs):
-        ax_TM2.plot(ax_x, (R_Tm[i]))
-    ax_TM2.set(xlabel=f'Incidence {y} ({c})', ylabel='Reflectivity')
-    ax_TM2.grid()
-    ax_TM.set_yticks(np.arange(0, 1.20, 0.20))
-
-    #plt.yticks(np.arange(0, 1.20, 0.20))
-    plt.show()
+        print(f"\n\nResonance Angle = {resonance_point:.4f}°\n\n")
+    tools.plot(theta_i, R_Tm, resonance_point, a1, mod_int)
 
 elif mod_int == 2:
     #  Setting Wavelength interrogation Mode:
@@ -110,13 +108,43 @@ elif mod_int == 2:
     theta_i = float(input("Angle of incidence (degress): "))*ACF
 
     # Starting and ending wavelength
-    a1 = float(input("Starting wavelength value (nm): "))
-    a2 = float(input("Ending wavelength value (nm): "))
+    a1 = float(input("Starting wavelength value (nm): ")) * 1e-9
+    a2 = float(input("Ending wavelength value (nm): ")) * 1e-9
 
-    lambda_i = np.arange(a1, a2, 0.1)  # Array with wavelength of incidence
+    lambda_i = np.arange(a1, a2, 1e-11)  # Array with wavelength of incidence
 
-    print(
-        f"len(lambda_i) = {len(lambda_i)}\n lambda_i= {lambda_i} \nAngle of incidence= {theta_i/ACF} deg. \n a1 = {a1} nm and a2 = {a2} nm")
+    #  Defining the structure
+    n_layers = int(
+        input("\nSet the number of layers in your structure:\n     N = "))
+    
+    for layer in range(n_layers):
+        d, m = sl.setLayers(layer)  # Sets the thickness and material for each layer
+        thickness.append(d)
+        material.append(m)
+
+    #n_subs = int(input("\nAnalyze sensitivity for how many interactions?\n >> "))
+    n_subs = 1
+
+    #list_analyte = sl.setAnalyte(n_subs,ref_index[-1])
+
+    for i in range(n_subs):
+        r_TM = []      # Local variable that temporarily stores reflectivity values for each of the interactions
+        #ref_index[-1] = complex(list_analyte[i])
+        for t in range(len(lambda_i)):
+            ref_index = []
+            for layer in range(n_layers):
+                ref_index.append(sl.set_index(material[layer],lambda_i[t]))
+
+            r_TM.append(ref.Reflectivity(
+                n_layers, thickness, ref_index, theta_i, lambda_i[t],))
+
+        resonance_point = tools.Point_SPR(r_TM, lambda_i, mod_int)
+
+        R_Tm.append(r_TM)
+
+        print(f"\n\nResonance Wavelength = {resonance_point:.4f} nm\n\n")
+
+    tools.plot(lambda_i, R_Tm, resonance_point, a1, mod_int)
 
 
 else:
