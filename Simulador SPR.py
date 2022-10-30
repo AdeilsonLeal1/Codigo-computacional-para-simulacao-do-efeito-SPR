@@ -18,7 +18,7 @@ thickness = []  # Thickness of each layer
 material = []   # Material of each layer
 R_Tm = []       # Stores lists with reflectivity curves for each of the interactions
 resonance_point = nan   # Variable that stores the SPR resonance point
-ref_index = []  # Refractive index of de layers
+ref_index = []  # Refractive index of the layers
 
 # screen cleaning
 if os.name == 'nt':
@@ -60,7 +60,6 @@ if mod_int == 1:
         input("\nSet the number of layers in your structure:\n     N = "))
 
     for layer in range(n_layers):
-        
         d, m = sl.setLayers(layer)  # Sets the thickness and material for each layer
         thickness.append(d)
         material.append(m)
@@ -91,12 +90,12 @@ if mod_int == 1:
             r_TM.append(ref.Reflectivity(
                 n_layers, thickness, ref_index, theta_i[t], lambda_i,))
 
-        resonance_point = tools.Point_SPR(r_TM, theta_i, mod_int)
+        resonance_point = tools.point_SPR(r_TM, theta_i, mod_int)
 
         R_Tm.append(r_TM)
 
         print(f"\n\nResonance Angle = {resonance_point:.4f}°\n\n")
-    tools.plot(theta_i, R_Tm, resonance_point, a1, mod_int)
+    tools.plot(theta_i, R_Tm, resonance_point, mod_int)
 
 elif mod_int == 2:
     #  Setting Wavelength interrogation Mode:
@@ -138,13 +137,13 @@ elif mod_int == 2:
             r_TM.append(ref.Reflectivity(
                 n_layers, thickness, ref_index, theta_i, lambda_i[t],))
 
-        resonance_point = tools.Point_SPR(r_TM, lambda_i, mod_int)
+        resonance_point = tools.point_SPR(r_TM, lambda_i, mod_int)
 
         R_Tm.append(r_TM)
 
         print(f"\n\nResonance Wavelength = {resonance_point:.4f} nm\n\n")
 
-    tools.plot(lambda_i, R_Tm, resonance_point, a1, mod_int)
+    tools.plot(lambda_i, R_Tm, resonance_point, mod_int)
 
 
 else:
