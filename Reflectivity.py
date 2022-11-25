@@ -2,7 +2,6 @@
 # module that calculates the Fresnel coefficient
 
 from cmath import cos, pi, sin, sqrt
-
 from numpy import array
 
 
@@ -39,4 +38,4 @@ def Reflectivity(nLayers, d,  index, theta_i, wavelenght):
 
     r_TM = num_TM / den_TM  # 'r_TM'-> Fresnel reflection coefficient - TM polarization
 
-    return abs(r_TM) ** 2  # Reflectance - TM polarization
+    return (abs(r_TM) ** 2)  # Reflectance - TM polarization

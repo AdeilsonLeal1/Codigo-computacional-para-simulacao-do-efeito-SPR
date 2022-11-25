@@ -3,6 +3,7 @@
 # in wavelength interrogation mode (WIM).
 
 from cmath import nan, pi
+from random import gauss
 import numpy as np
 import os
 import Setting_Layers as sl
@@ -37,8 +38,9 @@ else:
     os.system('clear')
 
 # Selecting interrogation mode
-mod_int = int(input(
-    "Interrogation mode: \n     1 - Angular Interrogation Mode (AIM)\n     2 - Wavelength Interrogation Mode (WIM)\n >> "))
+mod_int = 1 #int(input(
+   # "Interrogation mode: \n     1 - Angular Interrogation Mode (AIM)\n     2 - Wavelength Interrogation Mode (WIM)\n >> "))
+
 
 if mod_int == 1:
     #  Setting Angular interrogation Mode:
@@ -47,20 +49,21 @@ if mod_int == 1:
           "\n## Setting angular interrogation mode:\n\n ")
 
     # Incident wavelength
-    lambda_i = float(input("Incident wavelength (nm): ")) * 1e-9
+    lambda_i = 633 * 1e-9 ##float(input("Incident wavelength (nm): ")) * 1e-9
 
     # Starting and ending angle
-    a1 = float(input("Starting angle value (degress): "))*ACF
-    a2 = float(input("Ending angle value (degress): "))*ACF
+    a1 = 60 * ACF #float(input("Starting angle value (degress): "))*ACF
+    a2 = 80 * ACF #float(input("Ending angle value (degress): "))*ACF
 
-    theta_i = np.arange(a1, a2, 0.001*ACF)  # Array with angles of incidence
+    theta_i = np.linspace(a1, a2, 128)  # Array with angles of incidence
 
     #  Defining the structure
-    n_layers = int(
-        input("\nSet the number of layers in your structure:\n     N = "))
+    n_layers = 3#int(
+        #input("\nSet the number of layers in your structure:\n     N = "))
 
     for layer in range(n_layers):
-        d, m = sl.setLayers(layer)  # Sets the thickness and material for each layer
+        # Sets the thickness and material for each layer
+        d, m = sl.setLayers(layer)
         thickness.append(d)
         material.append(m)
 
@@ -68,13 +71,12 @@ if mod_int == 1:
             if material[layer] == 9:
                 ref_index.append(sl.set_index_custom())
             else:
-                ref_index.append(sl.set_index(material[layer],lambda_i))
+                ref_index.append(sl.set_index(material[layer], lambda_i))
         else:
             if material[layer] == 20:
                 ref_index.append(sl.set_index_custom())
             else:
-                ref_index.append(sl.set_index(material[layer],lambda_i))
-
+                ref_index.append(sl.set_index(material[layer], lambda_i))
 
     #n_subs = int(input("\nAnalyze sensitivity for how many interactions?\n >> "))
     n_subs = 1
@@ -83,19 +85,25 @@ if mod_int == 1:
 
     for i in range(n_subs):
         r_TM = []      # Local variable that temporarily stores reflectivity values for each of the interactions
-
         #ref_index[-1] = complex(list_analyte[i])
-
+        
         for t in range(len(theta_i)):
             r_TM.append(ref.Reflectivity(
-                n_layers, thickness, ref_index, theta_i[t], lambda_i,))
+                n_layers, thickness, ref_index, theta_i[t], lambda_i))
 
         resonance_point = tools.point_SPR(r_TM, theta_i, mod_int)
-
+       
         R_Tm.append(r_TM)
 
         print(f"\n\nResonance Angle = {resonance_point:.4f}°\n\n")
-    tools.plot(theta_i, R_Tm, resonance_point, mod_int)
+   
+    R_noise = np.vectorize(lambda r_tm: r_tm+(gauss(0, 0.5)/10))(R_Tm[0])
+   
+    tools.save_csv("reflectivity.csv",theta_i/ACF, R_Tm[0])
+    tools.save_csv("reflectivity_noise.csv",theta_i/ACF, R_noise)
+
+    tools.data_processing()
+    #tools.plot(theta_i, R_Tm, resonance_point, mod_int)
 
 elif mod_int == 2:
     #  Setting Wavelength interrogation Mode:
@@ -115,9 +123,10 @@ elif mod_int == 2:
     #  Defining the structure
     n_layers = int(
         input("\nSet the number of layers in your structure:\n     N = "))
-    
+
     for layer in range(n_layers):
-        d, m = sl.setLayers(layer)  # Sets the thickness and material for each layer
+        # Sets the thickness and material for each layer
+        d, m = sl.setLayers(layer)
         thickness.append(d)
         material.append(m)
 
@@ -132,10 +141,10 @@ elif mod_int == 2:
         for t in range(len(lambda_i)):
             ref_index = []
             for layer in range(n_layers):
-                ref_index.append(sl.set_index(material[layer],lambda_i[t]))
+                ref_index.append(sl.set_index(material[layer], lambda_i[t]))
 
             r_TM.append(ref.Reflectivity(
-                n_layers, thickness, ref_index, theta_i, lambda_i[t],))
+                n_layers, thickness, ref_index, theta_i, lambda_i[t]))
 
         resonance_point = tools.point_SPR(r_TM, lambda_i, mod_int)
 
