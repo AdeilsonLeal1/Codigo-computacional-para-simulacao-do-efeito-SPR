@@ -41,41 +41,65 @@ def plot(x_i, R_Tm, resonance_point, modo):
 
     plt.show()
 
-def data_processing():
+
+def data_processing(ref_index):
     refletivity = pd.read_csv("reflectivity.csv")
     refletivity_processing = pd.read_csv("reflectivity_noise.csv")
-    refletivity_processing['MMS'] = refletivity_processing['Reflectivity'].rolling(window=10).mean()
-    refletivity_processing['MME'] = refletivity_processing['Reflectivity'].ewm(span=2).mean()
-    refletivity_processing['MME2'] = refletivity_processing['MME'].ewm(span=2).mean()
-    refletivity_processing['MME4'] = refletivity_processing['MME2'].ewm(span=2).mean()
-    refletivity_processing['MME8'] = refletivity_processing['MME4'].ewm(span=2).mean()
-    refletivity_processing['MME16'] = refletivity_processing['MME8'].ewm(span=2).mean()
-
-    fig1, fig = plt.subplots(dpi=200)
-    fig.plot(refletivity['Angle'], refletivity['Reflectivity'], label="Theorical")
-    #fig.plot(refletivity_processing['Angle'], refletivity_processing['Reflectivity'], label="Sinal bruto")
-    fig.plot(refletivity_processing['Angle'], refletivity_processing['MME16'], label="MME16")
-    fig.plot(refletivity_processing['Angle'], refletivity_processing['MME8'], label="MME8")
+    refletivity_processing['MMS'] = refletivity_processing['Reflectivity'].rolling(
+        window=10).mean()
+    refletivity_processing['MME'] = refletivity_processing['Reflectivity'].ewm(
+        span=2).mean()
+    refletivity_processing['MME2'] = refletivity_processing['MME'].ewm(
+        span=2).mean()
+    refletivity_processing['MME4'] = refletivity_processing['MME2'].ewm(
+        span=2).mean()
+    refletivity_processing['MME8'] = refletivity_processing['MME4'].ewm(
+        span=2).mean()
+    refletivity_processing['MME16'] = refletivity_processing['MME8'].ewm(
+        span=2).mean()
     
+    resonance_point = point_SPR(list(refletivity_processing['MME8']),list(refletivity['Angle']*pi/180), 1)
+    
+    print(resonance_point)
+    
+    print(f"Indice indice após processamento{return_analyte(ref_index, resonance_point)}")
+    
+    fig1, fig = plt.subplots(dpi=200)
+    fig.plot(refletivity['Angle'],
+             refletivity['Reflectivity'], label="Theorical")
+    fig.plot(refletivity_processing['Angle'],
+             refletivity_processing['Reflectivity'], label="Sinal bruto")
+    fig.plot(refletivity_processing['Angle'],
+             refletivity_processing['MME16'], label="MME16")
+    fig.plot(refletivity_processing['Angle'],
+             refletivity_processing['MME8'], label="MME8")
+
     fig.legend()
     fig.grid()
     plt.show()
 
+
 def save_csv(name, x, y):
-     # 1. create the file
+    # 1. create the file
     f = open(name, 'w', newline='', encoding='utf-8')
 
     # 2. create the recording object
     w = csv.writer(f)
-   
+
     # 3. record the lines
-    w.writerow(['Angle','Reflectivity'])
-   
+    w.writerow(['Angle', 'Reflectivity'])
+
     for i in range(len(y)):
-        w.writerow([x[i],y[i]])
-       
+        w.writerow([x[i], y[i]])
+
     # close the files
-    f.close() 
+    f.close()
 
 
-
+def return_analyte(refractive_index, point_SPR):
+    print(refractive_index)
+    emr = np.real(refractive_index[1])**2 - np.imag(refractive_index[1])**2
+    index_analyte = np.sqrt((emr*(refractive_index[0]*np.sin(point_SPR*pi/180))**2)/
+        (emr-(refractive_index[0]*np.sin(point_SPR*pi/180))**2))
+    
+    return np.round(index_analyte,3)

@@ -102,7 +102,9 @@ if mod_int == 1:
     tools.save_csv("reflectivity.csv",theta_i/ACF, R_Tm[0])
     tools.save_csv("reflectivity_noise.csv",theta_i/ACF, R_noise)
 
-    tools.data_processing()
+    print(f"Indice teórico{tools.return_analyte(ref_index, resonance_point)}")
+    
+    tools.data_processing(ref_index=ref_index)
     #tools.plot(theta_i, R_Tm, resonance_point, mod_int)
 
 elif mod_int == 2:
