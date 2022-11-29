@@ -69,14 +69,16 @@ def data_processing(ref_index):
              refletivity['Reflectivity'], label="Theorical")
     fig.plot(refletivity_processing['Angle'],
              refletivity_processing['Reflectivity'], label="Sinal bruto")
-    fig.plot(refletivity_processing['Angle'],
-             refletivity_processing['MME16'], label="MME16")
+    #fig.plot(refletivity_processing['Angle'],
+            # refletivity_processing['MME16'], label="MME16")
     fig.plot(refletivity_processing['Angle'],
              refletivity_processing['MME8'], label="MME8")
 
     fig.legend()
     fig.grid()
+    plt.savefig('Curva SPR.png')
     plt.show()
+    plt.close()
 
 
 def save_csv(name, x, y):
