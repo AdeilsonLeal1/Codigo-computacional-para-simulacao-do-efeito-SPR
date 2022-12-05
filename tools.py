@@ -6,6 +6,7 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy.signal import butter, lfilter, freqz, filtfilt
 
 
 def point_SPR(reflet, ax_x, modo):
@@ -61,16 +62,17 @@ def data_processing(ref_index):
     resonance_point = point_SPR(list(refletivity_processing['MME8']),list(refletivity['Angle']*pi/180), 1)
     
     print(resonance_point)
-    
     print(f"Indice indice após processamento{return_analyte(ref_index, resonance_point)}")
     
+    signal_filtered = butter_lowpass_filter(data=refletivity_processing['Reflectivity'], cutoff=2, fs=30, order=5 )
+
     fig1, fig = plt.subplots(dpi=200)
     fig.plot(refletivity['Angle'],
              refletivity['Reflectivity'], label="Theorical")
     fig.plot(refletivity_processing['Angle'],
              refletivity_processing['Reflectivity'], label="Sinal bruto")
     fig.plot(refletivity_processing['Angle'],
-             refletivity_processing['MME16'], label="MME16")
+             signal_filtered, label="Signal filtered")
     fig.plot(refletivity_processing['Angle'],
              refletivity_processing['MME8'], label="MME8")
 
@@ -103,3 +105,11 @@ def return_analyte(refractive_index, point_SPR):
         (emr-(refractive_index[0]*np.sin(point_SPR*pi/180))**2))
     
     return np.round(index_analyte,3)
+
+
+def butter_lowpass_filter(data, cutoff, fs, order):
+    normal_cutoff = cutoff / (0.5 * fs)
+    # Get the filter coefficients 
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    y = filtfilt(b, a, data)
+    return y
