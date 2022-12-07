@@ -78,7 +78,9 @@ def data_processing(ref_index):
 
     fig.legend()
     fig.grid()
+    plt.savefig('Curva SPR.png')
     plt.show()
+    plt.close()
 
 
 def save_csv(name, x, y):
