@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>600</height>
+    <width>1096</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">
-</string>
+    <string notr="true"/>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="spacing">
@@ -132,7 +131,7 @@ QLabel{
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;</string>
+             <string notr="true">font: 500 10pt &quot;Segoe UI&quot;;</string>
             </property>
             <property name="title">
              <string>Calibration</string>
@@ -141,6 +140,38 @@ QLabel{
              <property name="spacing">
               <number>10</number>
              </property>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label_Dry_confirm">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">:/icons/icons/close.png</pixmap>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="btn_Dry_flow_cell">
+               <property name="text">
+                <string>Dry flow cell</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_16">
                <property name="sizePolicy">
@@ -160,38 +191,6 @@ QLabel{
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPushButton" name="btn_Dry_flow_cell">
-               <property name="text">
-                <string>Dry flow cell</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label_Dry_confirm">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>30</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">:/icons/icons/close.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -220,7 +219,7 @@ QLabel{
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">:/icons/icons/close.png</pixmap>
+                <pixmap resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">:/icons/icons/close.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -252,7 +251,7 @@ QLabel{
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;</string>
+             <string notr="true">font: 500 10pt &quot;Segoe UI&quot;;</string>
             </property>
             <property name="title">
              <string>Analyte</string>
@@ -337,7 +336,7 @@ QLabel{
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;</string>
+             <string notr="true">font: 500 10pt &quot;Segoe UI&quot;;</string>
             </property>
             <property name="title">
              <string>Controls</string>
@@ -356,6 +355,13 @@ QLabel{
                </property>
               </widget>
              </item>
+             <item row="1" column="1">
+              <widget class="QPushButton" name="btn_save">
+               <property name="text">
+                <string>Save data</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="1">
               <widget class="QPushButton" name="btn_reset">
                <property name="text">
@@ -370,10 +376,10 @@ QLabel{
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QPushButton" name="btn_save">
+             <item row="2" column="0" colspan="2">
+              <widget class="QCommandLinkButton" name="commandLinkButton">
                <property name="text">
-                <string>Save data</string>
+                <string>View data</string>
                </property>
               </widget>
              </item>
@@ -402,7 +408,7 @@ QLabel{
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;
+             <string notr="true">font: 500 10pt &quot;Segoe UI&quot;;
 </string>
             </property>
             <property name="title">
@@ -623,7 +629,7 @@ QLabel{
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
+                <pixmap resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -645,7 +651,7 @@ QLabel{
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">font: 700 11pt &quot;Segoe UI&quot;;</string>
+                <string notr="true">font: 500 10pt &quot;Segoe UI&quot;;</string>
                </property>
                <property name="text">
                 <string>Add Label</string>
@@ -697,7 +703,7 @@ QLabel{
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
+                <pixmap resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -782,7 +788,7 @@ QLabel{
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
+                <pixmap resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -884,7 +890,7 @@ QLabel{
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
+                <pixmap resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">:/icons/icons/LOGO.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -981,7 +987,8 @@ QLabel{
   </widget>
   <action name="actionNew">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>New</string>
@@ -989,7 +996,7 @@ QLabel{
   </action>
   <action name="actionopen">
    <property name="icon">
-    <iconset resource="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc">
+    <iconset resource="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc">
      <normaloff>:/icons/icons/livro.png</normaloff>:/icons/icons/livro.png</iconset>
    </property>
    <property name="text">
@@ -1003,6 +1010,7 @@ QLabel{
   </action>
  </widget>
  <resources>
+  <include location="../Sim-LMR/Sim-LMR (Interface)/icons_.qrc"/>
   <include location="../../Pesquisa/PIBIC  2022-2023/Sim-LMR-Interface-/Sim-LMR-Interface--main/icons_.qrc"/>
  </resources>
  <connections/>
