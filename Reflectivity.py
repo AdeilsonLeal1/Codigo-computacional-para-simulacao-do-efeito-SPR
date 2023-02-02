@@ -5,7 +5,7 @@ from cmath import cos, pi, sin, sqrt
 from numpy import array
 
 
-def Reflectivity(nLayers, d,  index, theta_i, wavelenght):
+def reflectivity(nLayers, d,  index, theta_i, wavelenght):
 
     j = complex(0, 1)  # Simplification for the complex number "j"
     k0 = (2 * pi) / wavelenght  # Wave number

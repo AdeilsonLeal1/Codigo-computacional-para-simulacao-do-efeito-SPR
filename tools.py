@@ -30,15 +30,15 @@ def plot(x_i, R_Tm, resonance_point, modo):
     ax_x = x_i * (180 / pi) if modo == 1 else x_i * 1E9
 
     fig0, ax_TM = plt.subplots(dpi=200)
-    ax_TM.plot(ax_x, (R_Tm[0]))
-    ax_TM.set_title(f"Reflectivity vs. {y} of Incidence",
-                    loc='center', pad='6')
-    ax_TM.set(xlabel=f'Incidence {y} ({c})', ylabel='Reflectivity')
-    text = f"{n}$_S$$_P$$_R$ = {resonance_point:.4f}{c}"
-    ax_TM.annotate(text, (resonance_point, min(R_Tm[0])), xytext=(ax_x[0], 0.1), arrowprops=dict(facecolor='blue', arrowstyle="->"),
-                   bbox={'facecolor': 'white', 'edgecolor': 'gray', 'alpha': 0.7})
+    ax_TM.magnitude_spectrum(R_Tm)
+   # ax_TM.set_title(f"Reflectivity vs. {y} of Incidence",
+                 #   loc='center', pad='6')
+   # ax_TM.set(xlabel=f'Incidence {y} ({c})', ylabel='Reflectivity')
+   # text = f"{n}$_S$$_P$$_R$ = {resonance_point:.4f}{c}"
+   # ax_TM.annotate(text, (resonance_point, min(R_Tm[0])), xytext=(ax_x[0], 0.1), arrowprops=dict(facecolor='blue', arrowstyle="->"),
+                #   bbox={'facecolor': 'white', 'edgecolor': 'gray', 'alpha': 0.7})
     ax_TM.grid()
-    ax_TM.set_yticks(np.arange(0, 1.20, 0.20))
+   # ax_TM.set_yticks(np.arange(0, 1.20, 0.20))
 
     plt.show()
 
@@ -46,6 +46,16 @@ def plot(x_i, R_Tm, resonance_point, modo):
 def data_processing(ref_index):
     refletivity = pd.read_csv("reflectivity.csv")
     refletivity_processing = pd.read_csv("reflectivity_noise.csv")
+
+    dados = pd.read_csv("experimento_H2O.csv", encoding='latin1')
+    pixel = dados['pixel']
+    #pixel = pixel[::-1]
+    signal = dados[' signal']
+    theta = []
+
+    for i in pixel:
+        theta.append((3.1522 * 1E-5 * i**2) - (0.0661 * i) + 73.4533)   
+    
     refletivity_processing['MMS'] = refletivity_processing['Reflectivity'].rolling(
         window=10).mean()
     refletivity_processing['MME'] = refletivity_processing['Reflectivity'].ewm(
@@ -61,23 +71,20 @@ def data_processing(ref_index):
     
     resonance_point = point_SPR(list(refletivity_processing['MME8']),list(refletivity['Angle']*pi/180), 1)
     
-    print(resonance_point)
-    print(f"Indice indice após processamento{return_analyte(ref_index, resonance_point)}")
+    #print(resonance_point)
+    #print(f"Indice indice após processamento{return_analyte(ref_index, resonance_point)}")
     
     signal_filtered = butter_lowpass_filter(data=refletivity_processing['Reflectivity'], cutoff=2, fs=30, order=5 )
 
-    fig1, fig = plt.subplots(dpi=200)
-    fig.plot(refletivity['Angle'],
-             refletivity['Reflectivity'], label="Theorical")
-    fig.plot(refletivity_processing['Angle'],
-             refletivity_processing['Reflectivity'], label="Sinal bruto")
-    fig.plot(refletivity_processing['Angle'],
-             signal_filtered, label="Signal filtered")
-    fig.plot(refletivity_processing['Angle'],
-             refletivity_processing['MME8'], label="MME8")
+    
+    plt.plot(refletivity['Angle'], refletivity['Reflectivity'], label="Theorical")
+    #fig.plot(refletivity_processing['Angle'], refletivity_processing['Reflectivity'], label="Sinal bruto")
+    #fig.plot(refletivity_processing['Angle'], signal_filtered, label="Signal filtered")
+    #fig.plot(refletivity_processing['Angle'], refletivity_processing['MME8'], label="MME8")
+    plt.plot(theta, signal, 'o', label="Experimento")
 
-    fig.legend()
-    fig.grid()
+    plt.legend()
+    plt.grid()
     plt.savefig('Curva SPR.png')
     plt.show()
     plt.close()

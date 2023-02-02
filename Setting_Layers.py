@@ -192,7 +192,16 @@ def set_index(material, wi):
         # Method that calculates the refractive indices of the metals by linear interpolation
         # using the points contained in X, n e k_index previously described
         n = complex(interp(Lambda_i, X, n_cy))
+    
+    elif material == 21:
+        X = [0.4, 2]
 
+        n_cy = [1.4925, 1.4710]
+
+        # Method that calculates the refractive indices of the metals by linear interpolation
+        # using the points contained in X, n e k_index previously described
+        n = complex(interp(Lambda_i, X, n_cy))
+    
     n0 = round(real(n), 5)  # Rounded to five decimal places
     k0 = round(imag(n), 5)  # Rounded to five decimal places
 

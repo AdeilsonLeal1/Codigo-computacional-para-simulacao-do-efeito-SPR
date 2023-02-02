@@ -49,11 +49,11 @@ if mod_int == 1:
           "\n## Setting angular interrogation mode:\n\n ")
 
     # Incident wavelength
-    lambda_i = 633 * 1e-9 ##float(input("Incident wavelength (nm): ")) * 1e-9
+    lambda_i = 830 * 1e-9 ##float(input("Incident wavelength (nm): ")) * 1e-9
 
     # Starting and ending angle
-    a1 = 60 * ACF #float(input("Starting angle value (degress): "))*ACF
-    a2 = 80 * ACF #float(input("Ending angle value (degress): "))*ACF
+    a1 = 65.5090 * ACF #float(input("Starting angle value (degress): "))*ACF
+    a2 = 73.3877 * ACF #float(input("Ending angle value (degress): "))*ACF
 
     theta_i = np.linspace(a1, a2, 128)  # Array with angles of incidence
 
@@ -88,7 +88,8 @@ if mod_int == 1:
         #ref_index[-1] = complex(list_analyte[i])
         
         for t in range(len(theta_i)):
-            r_TM.append(ref.Reflectivity(
+
+            r_TM.append(ref.reflectivity(
                 n_layers, thickness, ref_index, theta_i[t], lambda_i))
 
         resonance_point = tools.point_SPR(r_TM, theta_i, mod_int)
@@ -145,7 +146,7 @@ elif mod_int == 2:
             for layer in range(n_layers):
                 ref_index.append(sl.set_index(material[layer], lambda_i[t]))
 
-            r_TM.append(ref.Reflectivity(
+            r_TM.append(ref.reflectivity(
                 n_layers, thickness, ref_index, theta_i, lambda_i[t]))
 
         resonance_point = tools.point_SPR(r_TM, lambda_i, mod_int)
