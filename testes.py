@@ -26,8 +26,19 @@ def p(i):
     a = f*g*h
     return a
 
+def p_2(i):
+    dc = 0.632
+    a = 1/(sqrt(2*pi))
+    b = 30
 
-ACF = (pi/180)  # Angle Conversion Factor.
+    
+    f = dc + (a/1.1) * exp(-((i - 850)**2)/(b**2))
+
+    a = f
+    return a
+
+
+"""ACF = (pi/180)  # Angle Conversion Factor.
 
 thickness = [1, 50*1E-9, 1]  # Thickness of each layer
 material = [1, 13, 16]   # Material of each layer
@@ -67,7 +78,7 @@ for theta in theta_i:
 R_Tm.append(r_TM)
 
 plt.plot(theta_i/ACF, R_Tm[0])
-tools.data_processing(ref_index)
+tools.data_processing(ref_index)"""
 
 
 
@@ -87,7 +98,7 @@ plt.plot(theta, signal, 'o')
 plt.show()
 
 """
-"""dset2 = pd.read_csv("Default Dataset 2.csv", encoding='latin1')
+dset2 = pd.read_csv("Default Dataset 2.csv", encoding='latin1')
 dset1 = pd.read_csv("Default Dataset.csv", encoding='latin1')
 
 dset1.dropna()
@@ -100,16 +111,19 @@ energy2 = dset2['e2']/10000
 lambda_i2 = dset2['l'] + dset2['l2']/10000
 
 y=[]
+y2 = []
 x = list(linspace(400, 1000, 300))
 
 for i in x:
     a = p(i)
+    y2.append(p_2(i))
     y.append(a)
 
 plt.plot(lambda_i, energy, label='base')
 plt.plot(x, y, label='aprox')
+plt.plot(x, y2, label='aprox2')
 plt.legend()
 plt.grid()
-plt.show()"""
+plt.show()
 
 
