@@ -98,7 +98,7 @@ plt.plot(theta, signal, 'o')
 plt.show()
 
 """
-dset2 = pd.read_csv("Default Dataset 2.csv", encoding='latin1')
+"""dset2 = pd.read_csv("Default Dataset 2.csv", encoding='latin1')
 dset1 = pd.read_csv("Default Dataset.csv", encoding='latin1')
 
 dset1.dropna()
@@ -126,4 +126,39 @@ plt.legend()
 plt.grid()
 plt.show()
 
+"""
 
+Idc = float(1.33000)
+
+tau = 200
+
+idcs = [0.0010, 0, 0.0005, 0, 0.0005, 0.0015, 0.004, 0]
+
+carga = [True, False, True, False, True, True, False, False]
+count = 0
+ri = []
+while (count < 1000):
+    ri.append(1.33)
+    count+=1
+count = 0
+
+for dc, load in zip(idcs, carga):
+    if load:
+        while (count < 1500):
+                v = Idc + dc*(1 - exp(-count/tau))
+                ri.append(v)
+                count+=1
+    else:
+        while (count < 2500):
+                v = (Idc+dc) - dc*(exp(-count/tau))
+                ri.append(v)
+                count+=1
+    
+    count = 0
+
+x = linspace (0,len(ri), len(ri) )
+y = [1.33 for i in x]
+plt.plot(x, ri, '--')
+plt.plot(x, y)
+plt.yticks(arange(1.329, 1.334, 0.001))
+plt.show()
