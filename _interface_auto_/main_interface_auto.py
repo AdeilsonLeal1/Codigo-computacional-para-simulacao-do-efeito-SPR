@@ -149,6 +149,7 @@ class MainWindow(QWidget, Ui_Form):
         self.figure_raw.clear()
         plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
         plt.grid(alpha=0.5)
+        plt.yticks(arange(0, 5.5, 1))
         self.figure_raw.tight_layout()
         
         self.canvas_raw.draw()
@@ -169,6 +170,7 @@ class MainWindow(QWidget, Ui_Form):
         self.figure_raw.clear()
         plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
         plt.grid(alpha=0.5)
+        plt.yticks(arange(0, 5.5, 1))
         self.figure_raw.tight_layout()
         self.canvas_raw.draw()
 
@@ -191,6 +193,7 @@ class MainWindow(QWidget, Ui_Form):
         self.ax = self.figure_sample.add_subplot()
         self.ax.plot(angle_, (signal_/noise_ref), label= 'Signal Ref TXT', linewidth=0.5)
         self.ax.grid(alpha=0.5)
+        self.ax.set_yticks(arange(0, 1.2, 0.2))
         self.figure_sample.tight_layout()
         self.canvas_sample.draw()
         time.sleep(1)
@@ -212,8 +215,6 @@ class MainWindow(QWidget, Ui_Form):
 
             
             self.printParameters(signal_filtered, angle_)
-
-
 
             self.plotSprCurve(angle_, signal_filtered)
             self.plotSampleCurve(angle_, signal_)
@@ -247,7 +248,8 @@ class MainWindow(QWidget, Ui_Form):
         self.min_pixel.setText(f"{pixel_res}")
         self.resonance_angle.setText(f"{res_angle:.6f}")
         self.refractive_index.setText(f"{ref_index:.6f}")
-        
+
+
     def returnAngleRes(self, signal, angle, min):
         # Ajuste polinomial e localização do mínimo da curva
         
@@ -270,6 +272,20 @@ class MainWindow(QWidget, Ui_Form):
         
         return float(index_analyte) 
     
+    def plotSensorgramCurve(self, i, index):
+        self.figure_sensorgram.clear()
+        plt.subplots_adjust(top=0.939,
+                            bottom=0.218,
+                            left=0.125,
+                            right=0.969,
+                            hspace=0.2,
+                            wspace=0.2)
+
+        ax2 = self.figure_sample.add_subplot()
+        ax2.plot(i, index, linewidth=0.5)
+        ax2.grid(alpha=0.5)
+        self.figure_sensorgram.tight_layout()
+
     def plotSampleCurve(self, _angle, _signal):
         self.figure_sample.clear()
         plt.subplots_adjust(top=0.939,
@@ -282,6 +298,7 @@ class MainWindow(QWidget, Ui_Form):
         ax2 = self.figure_sample.add_subplot()
         ax2.plot(_angle, _signal, linewidth=0.5)
         ax2.grid(alpha=0.5)
+        ax2.set_yticks(arange(0, 1.2, 0.2))
         self.figure_sample.tight_layout()
         
     def plotSprCurve(self,_angle, _signal):
@@ -294,6 +311,7 @@ class MainWindow(QWidget, Ui_Form):
                             wspace=0.2)
         ax = self.figure_spr.add_subplot()
         ax.plot(_angle, _signal, linewidth=0.5)
+        ax.set_yticks(arange(0, 1.2, 0.2))
         ax.grid(alpha=0.5)
         self.figure_spr.tight_layout()
 
@@ -317,6 +335,7 @@ class MainWindow(QWidget, Ui_Form):
         self.figure_raw.clear()
         ax = self.figure_raw.add_subplot()
         ax.plot(pixel_, signal_, label='Signal', linewidth=0.5)
+        ax.set_yticks(arange(0, 5.5, 1))
         ax.grid(alpha=0.5)
         self.figure_raw.tight_layout()
        
