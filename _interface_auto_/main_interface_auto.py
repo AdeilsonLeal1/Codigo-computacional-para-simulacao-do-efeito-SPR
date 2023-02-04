@@ -7,12 +7,12 @@ from Simulador_Spreeta_auto import Ui_Form
 from numpy import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.animation import FuncAnimation
 import Setting_Layers as sl
 import sys
 import matplotlib.pyplot as plt
 import time
 
-REF = 0
 
 class MainWindow(QWidget, Ui_Form):
     def __init__(self):
@@ -59,9 +59,6 @@ class MainWindow(QWidget, Ui_Form):
         # Calibração 
         self.btn_Dry_flow_cell.clicked.connect(self.dryCellCalibration)
         self.btn_Wet_flow_cell.clicked.connect(self.wetCellCalibration)
-
-        # Atualização do formato
-        self.cbox_format.currentIndexChanged.connect(self.changeFormat)
 
         # Iniciando monitoramento
         self.btn_start.clicked.connect(self.startMonitoring)
@@ -128,8 +125,6 @@ class MainWindow(QWidget, Ui_Form):
         return a # Reflectance - TM polarization
 
     def plotReference(self):
-        global REF
-        REF = 1
 
         plt.subplots_adjust(top=0.939,
                             bottom=0.218,
@@ -143,22 +138,14 @@ class MainWindow(QWidget, Ui_Form):
         angle_ = signal_ref_txt['Angle']
         signal_ = signal_ref_txt['Signal']
         noise_ref = signal_ref_txt['Noise_Ref']
-        
-        if self.cbox_format.currentText() == "Signal vs. Pixel":
-            self.figure_raw.clear()
-            plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
-            plt.grid(alpha=0.5)
-        else:
-            self.figure_raw.clear()
-            plt.plot(angle_, (signal_/noise_ref), label='Signal', linewidth=0.5)
-            plt.grid(alpha=0.5)
+       
+        self.figure_raw.clear()
+        plt.plot(angle_, (signal_/noise_ref), label='Signal', linewidth=0.5)
+        plt.grid(alpha=0.5)
         
         self.canvas_raw.draw()
     
     def plotReferenceWet(self):
-        global REF
-        REF = 2
-
         plt.subplots_adjust(top=0.939,
                             bottom=0.218,
                             left=0.125,
@@ -168,40 +155,26 @@ class MainWindow(QWidget, Ui_Form):
         
         signal_ref_txt = pd.read_csv('Reference_data_wet.csv', encoding='latin1')
         pixel_ = signal_ref_txt['Pixel #']
-        angle_ = signal_ref_txt['Angle']
         signal_ = signal_ref_txt['Signal']
-        noise_ref = signal_ref_txt['Noise_Ref']
         
-        if self.cbox_format.currentText() == "Signal vs. Pixel":
-            self.figure_raw.clear()
-            plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
-            plt.grid(alpha=0.5)
-        else:
-            self.figure_raw.clear()
-            plt.plot(angle_, (signal_/noise_ref), label='Signal', linewidth=0.5)
-            plt.grid(alpha=0.5)
+
+        self.figure_raw.clear()
+        plt.plot(pixel_, (signal_), label='Signal', linewidth=0.5)
+        plt.grid(alpha=0.5)
         
         self.canvas_raw.draw()
 
-    def changeFormat(self):
-        if REF == 1:
-            self.plotReference()
-        elif REF == 2:
-            self.plotReferenceWet()
-        else:
-            pass
 
     def startMonitoring(self):
-
+        
         signal_ref_txt = pd.read_csv('Reference_data_wet.csv', encoding='latin1')
-        pixel_ = signal_ref_txt['Pixel #']
         angle_ = signal_ref_txt['Angle']
         signal_ = signal_ref_txt['Signal']
         noise_ref = signal_ref_txt['Noise_Ref']
         
-        plt.subplots_adjust(top=0.96,
-                            bottom=0.16,
-                            left=0.125,
+        plt.subplots_adjust(top=1.0,
+                            bottom=0.15,
+                            left=0.12,
                             right=0.97,
                             hspace=0.2,
                             wspace=0.2)
@@ -210,16 +183,15 @@ class MainWindow(QWidget, Ui_Form):
         self.ax = self.figure_sample.add_subplot()
         self.ax.plot(angle_, (signal_/noise_ref), label= 'Signal Ref TXT', linewidth=0.5)
         self.ax.grid(alpha=0.5)
-            
+        self.figure_sample.tight_layout()
         self.canvas_sample.draw()
-        time.sleep(2)
-        self.figure_sample.clear()
+        time.sleep(1)
 
-        signal_sensor = pd.read_csv('Sensor_data.txt', encoding='latin1', delimiter='\t')
-        angle_ = []
-        signal_ = []
-        
-        for i in range(len(signal_sensor['time(s)'])):
+
+        def updateGraph(i):
+            angle_, signal_ = [], []
+
+            signal_sensor = pd.read_csv('Sensor_data.txt', encoding='latin1', delimiter='\t')
             a = signal_sensor['Angle'][i].replace('[', '').replace(']', '').replace(' ', '')
             s = signal_sensor['SPR Curve'][i].replace('[', '').replace(']', '').replace(' ', '')
 
@@ -227,13 +199,20 @@ class MainWindow(QWidget, Ui_Form):
             angle_ = [float(j) for j in a]
             s = s.split(',')
             signal_ = [float(j) for j in s]
-            
+                
             signal_filtered = self.butter_lowpass_filter(data=signal_, cutoff=2, fs=30, order=5 )
 
             self.plotSprCurve(angle_, signal_filtered)
-            time.sleep(2)
+            self.plotSampleCurve(angle_, signal_)
+            self.plotRawCurve(i)
 
-    
+            self.canvas_sample.draw()
+            self.canvas_spr.draw()
+            self.canvas_raw.draw()
+            time.sleep(1)
+        
+        anim = FuncAnimation(self.figure_spr, updateGraph, interval=1000/30, frames= arange(0, 2700, 1))
+
     
     def butter_lowpass_filter(self, data, cutoff, fs, order):
         normal_cutoff = cutoff / (0.5 * fs)
@@ -242,20 +221,56 @@ class MainWindow(QWidget, Ui_Form):
         y = filtfilt(b, a, data)
         return y
     
-    def plotSprCurve(self,_angle, _signal):       
-        self.figure_spr.clear()
-        plt.subplots_adjust(top=0.96,
-                            bottom=0.16,
+    def plotSampleCurve(self, _angle, _signal):
+        self.figure_sample.clear()
+        plt.subplots_adjust(top=0.939,
+                            bottom=0.218,
                             left=0.125,
-                            right=0.97,
+                            right=0.969,
                             hspace=0.2,
                             wspace=0.2)
-        self.ax1 = self.figure_spr.add_subplot()
-        self.ax1.plot(_angle, _signal, linewidth=0.5)
-        self.ax1.grid(alpha=0.5)
-            
-        self.canvas_spr.draw()
+
+        ax2 = self.figure_sample.add_subplot()
+        ax2.plot(_angle, _signal, linewidth=0.5)
+        ax2.grid(alpha=0.5)
+        self.figure_sample.tight_layout()
         
+    def plotSprCurve(self,_angle, _signal):
+        self.figure_spr.clear()
+        plt.subplots_adjust(top=0.939,
+                            bottom=0.218,
+                            left=0.125,
+                            right=0.969,
+                            hspace=0.2,
+                            wspace=0.2)
+        ax = self.figure_spr.add_subplot()
+        ax.plot(_angle, _signal, linewidth=0.5)
+        ax.grid(alpha=0.5)
+        self.figure_spr.tight_layout()
+
+    def plotRawCurve(self, i):
+        signal_ref_txt = pd.read_csv('Reference_data_wet.csv', encoding='latin1')
+        pixel_ = signal_ref_txt['Pixel #']
+
+        signal_ = []
+        signal_sensor = pd.read_csv('Sensor_data.txt', encoding='latin1', delimiter='\t')
+        s = signal_sensor['Signal'][i].replace('[', '').replace(']', '').replace(' ', '')
+
+        s = s.split(',')
+        signal_ = [float(j) for j in s]
+        plt.subplots_adjust(top=0.939,
+                            bottom=0.218,
+                            left=0.125,
+                            right=0.969,
+                            hspace=0.2,
+                            wspace=0.2)
+
+        self.figure_raw.clear()
+        ax = self.figure_raw.add_subplot()
+        ax.plot(pixel_, signal_, label='Signal', linewidth=0.5)
+        ax.grid(alpha=0.5)
+        self.figure_raw.tight_layout()
+       
 
 
 if __name__ == "__main__":
