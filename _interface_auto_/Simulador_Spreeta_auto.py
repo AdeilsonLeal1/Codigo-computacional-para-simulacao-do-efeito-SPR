@@ -15,6 +15,11 @@ import icons_
 BTNSTYLE = """QPushButton{background-color: rgb(255, 255, 255); color:rgb(0,0,0)}
                 QPushButton::Hover{background-color: rgb(50, 160, 255); }"""
 
+LINEEDITSTYLE = """ QLineEdit{
+        font: 400 11pt \"Ubuntu\";\n
+	color: rgb(0,0,0);\n
+}"""
+
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -23,6 +28,157 @@ class Ui_Form(object):
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
+        
+        self.Window = QtWidgets.QFrame(Form)
+        self.Window.setObjectName(u"Window")
+        self.Window.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.Window.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.Window)
+        self.verticalLayout_7.setSpacing(0)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.header_frame = QtWidgets.QFrame(self.Window)
+        self.header_frame.setObjectName(u"header_frame")
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.header_frame.sizePolicy().hasHeightForWidth())
+        self.header_frame.setSizePolicy(sizePolicy)
+        self.header_frame.setMaximumSize(QtCore.QSize(16777215, 35))
+        self.header_frame.setStyleSheet(u"QFrame{\n"
+"	background-color: rgb(0, 70, 120);\n"
+"    border-top-left-radius: 10px;\n"
+"	border-top-right-radius: 10px;\n"
+"}\n"
+"\n"
+"")
+        self.header_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.header_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.header_frame)
+        self.horizontalLayout.setSpacing(10)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(8, 0, 8, 0)
+        self.icon = QtWidgets.QPushButton(self.header_frame)
+        self.icon.setObjectName(u"icon")
+        sizePolicy1 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.icon.sizePolicy().hasHeightForWidth())
+        self.icon.setSizePolicy(sizePolicy1)
+        self.icon.setMinimumSize(QtCore.QSize(40, 30))
+        self.icon.setMaximumSize(QtCore.QSize(40, 60))
+        self.icon.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.icon.setStyleSheet(u"QPushButton{\n"
+"	background:transparent;\n"
+"}\n"
+"")     
+        icon1 = QtGui.QIcon()
+        icon1.addFile(u":/icons/icons/LOGO.png", QtCore.QSize(), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon.setIcon(icon1)
+        self.icon.setIconSize(QtCore.QSize(40, 40))
+
+        self.horizontalLayout.addWidget(self.icon)
+
+        self.label_title = QtWidgets.QLabel(self.header_frame)
+        self.label_title.setObjectName(u"label_title")
+        self.label_title.setMaximumSize(QtCore.QSize(16777215, 40))
+        font = QtGui.QFont()
+        font.setFamilies([u"Ubuntu"])
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        self.label_title.setFont(font)
+        self.label_title.setStyleSheet(u"background:transparent;\n"
+"color: rgb(0, 170, 255);\n"
+"font: 500 10pt \"Ubuntu\";")
+
+        self.horizontalLayout.addWidget(self.label_title)
+
+        self.btn_help = QtWidgets.QPushButton(self.header_frame)
+        self.btn_help.setObjectName(u"btn_help")
+        self.btn_help.setMinimumSize(QtCore.QSize(20, 20))
+        self.btn_help.setMaximumSize(QtCore.QSize(65, 25))
+        font1 = QtGui.QFont()
+        font1.setFamilies([u"Ubuntu"])
+        font1.setPointSize(11)
+        font1.setBold(False)
+        font1.setItalic(False)
+        self.btn_help.setFont(font1)
+        self.btn_help.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_help.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.btn_help.setStyleSheet(u"QPushButton{\n"
+"	font: 400 11pt \"Ubuntu\";\n"
+"	color: rgb(255, 255,255);\n"
+"	background-color: rgb(0, 70, 120);\n"
+"	border-radius:6px;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"	background: rgb(0, 0, 255);\n"
+"	width: 40;\n"
+"	height: 35;\n"
+"}")
+        icon2 = QtGui.QIcon()
+        icon2.addFile(u":/icons/icons/help.png", QtCore.QSize(), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_help.setIcon(icon2)
+        self.btn_help.setIconSize(QtCore.QSize(15, 15))
+
+        self.horizontalLayout.addWidget(self.btn_help)
+
+        self.btn_minimizar = QtWidgets.QPushButton(self.header_frame)
+        self.btn_minimizar.setObjectName(u"btn_minimizar")
+        self.btn_minimizar.setMinimumSize(QtCore.QSize(20, 20))
+        self.btn_minimizar.setMaximumSize(QtCore.QSize(20, 20))
+        font2 =QtGui.QFont()
+        font2.setFamilies([u"Ubuntu"])
+        font2.setPointSize(10)
+        font2.setBold(True)
+        font2.setItalic(False)
+        self.btn_minimizar.setFont(font2)
+        self.btn_minimizar.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_minimizar.setStyleSheet(u"QPushButton{\n"
+"	font: 900 10pt \"Ubuntu\";\n"
+"	color: rgb(255, 255,255);\n"
+"	background:rgba(0, 190, 0, 120);\n"
+"	border-radius:6px;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"	background:rgb(0, 190, 0);\n"
+"	width: 40;\n"
+"	height: 35;\n"
+"}")
+
+        self.horizontalLayout.addWidget(self.btn_minimizar)
+
+        self.btn_close = QtWidgets.QPushButton(self.header_frame)
+        self.btn_close.setObjectName(u"btn_close")
+        self.btn_close.setMinimumSize(QtCore.QSize(20, 20))
+        self.btn_close.setMaximumSize(QtCore.QSize(20, 20))
+        self.btn_close.setFont(font)
+        self.btn_close.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_close.setStyleSheet(u"QPushButton{\n"
+"	font: 500 10pt \"Ubuntu\";\n"
+"	color: rgb(255, 255,255);\n"
+"	background:rgba(255, 0, 0, 130);\n"
+"	border-radius:6px;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"	background:rgb(255, 0, 0);\n"
+"	width: 40;\n"
+"	height: 35;\n"
+"}")
+        icon3 = QtGui.QIcon()
+        icon3.addFile(u":/icons/icons/close.png", QtCore.QSize(), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_close.setIcon(icon3)
+        self.btn_close.setIconSize(QtCore.QSize(12, 12))
+
+        self.horizontalLayout.addWidget(self.btn_close)
+
+
+        self.verticalLayout_7.addWidget(self.header_frame)
+        
         self.main_frame = QtWidgets.QFrame(Form)
         self.main_frame.setStyleSheet("QFrame{\n"
 "    background-color: rgb(0, 90, 150);\n"
@@ -200,6 +356,7 @@ class Ui_Form(object):
         self.min_pixel = QtWidgets.QLineEdit(self.gb_Results)
         self.min_pixel.setReadOnly(True)
         self.min_pixel.setObjectName("min_pixel")
+        self.min_pixel.setStyleSheet(LINEEDITSTYLE)
         self.gridLayout_7.addWidget(self.min_pixel, 0, 1, 1, 1)
         self.label_14 = QtWidgets.QLabel(self.gb_Results)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
@@ -215,6 +372,7 @@ class Ui_Form(object):
         self.resonance_angle.setText("")
         self.resonance_angle.setReadOnly(True)
         self.resonance_angle.setObjectName("resonance_angle")
+        self.resonance_angle.setStyleSheet(LINEEDITSTYLE)
         self.gridLayout_7.addWidget(self.resonance_angle, 1, 1, 1, 1)
         self.label_15 = QtWidgets.QLabel(self.gb_Results)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
@@ -230,6 +388,7 @@ class Ui_Form(object):
         self.refractive_index.setText("")
         self.refractive_index.setReadOnly(True)
         self.refractive_index.setObjectName("refractive_index")
+        self.refractive_index.setStyleSheet(LINEEDITSTYLE)
         self.gridLayout_7.addWidget(self.refractive_index, 2, 1, 1, 1)
         self.verticalLayout_2.addWidget(self.gb_Results)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -279,7 +438,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
         self.label_7.setSizePolicy(sizePolicy)
-        self.label_7.setMaximumSize(QtCore.QSize(35, 25))
+        self.label_7.setMaximumSize(QtCore.QSize(40, 25))
         self.label_7.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.label_7.setText("")
         self.label_7.setPixmap(QtGui.QPixmap(":/icons/icons/LOGO.png"))
@@ -315,7 +474,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
-        self.label_6.setMaximumSize(QtCore.QSize(35, 25))
+        self.label_6.setMaximumSize(QtCore.QSize(40, 25))
         self.label_6.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.label_6.setText("")
         self.label_6.setPixmap(QtGui.QPixmap(":/icons/icons/LOGO.png"))
@@ -357,7 +516,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
         self.label_9.setSizePolicy(sizePolicy)
-        self.label_9.setMaximumSize(QtCore.QSize(35, 25))
+        self.label_9.setMaximumSize(QtCore.QSize(40, 25))
         self.label_9.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.label_9.setText("")
         self.label_9.setPixmap(QtGui.QPixmap(":/icons/icons/LOGO.png"))
@@ -399,7 +558,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
         self.label_5.setSizePolicy(sizePolicy)
-        self.label_5.setMaximumSize(QtCore.QSize(35, 25))
+        self.label_5.setMaximumSize(QtCore.QSize(40, 25))
         self.label_5.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.label_5.setText("")
         self.label_5.setPixmap(QtGui.QPixmap(":/icons/icons/LOGO.png"))
@@ -438,13 +597,22 @@ class Ui_Form(object):
         self.gridLayout_2.addWidget(self.label_8, 3, 1, 1, 2)
         self.gridLayout.addWidget(self.frame_Sample, 0, 0, 1, 1)
         self.horizontalLayout_2.addWidget(self.frame_graphs)
-        self.verticalLayout_6.addWidget(self.main_frame)
+        self.verticalLayout_7.addWidget(self.main_frame)
+
+        self.verticalLayout_6.addWidget(self.Window)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
+
+        self.icon.setText("")
+        self.label_title.setText(_translate("Form", u"<html><head/><body><p align=\"center\"><span style=\" font-size:11pt; color:#ffffff;\">Simulador Speeta</span></p></body></html>", None))
+        self.btn_help.setText(_translate("Form", u"Help  ", None))
+        self.btn_minimizar.setText(_translate("Form", u"_", None))
+        self.btn_close.setText("")
+
         self.gb_calibration.setTitle(_translate("Form", "Calibration"))
         self.btn_Wet_flow_cell.setText(_translate("Form", "Wet flow cell"))
         self.btn_Dry_flow_cell.setText(_translate("Form", "Dry flow cell"))

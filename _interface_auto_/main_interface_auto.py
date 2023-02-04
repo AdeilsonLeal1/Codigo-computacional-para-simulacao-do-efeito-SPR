@@ -1,3 +1,4 @@
+from scipy import optimize
 from scipy.signal import butter, lfilter, freqz, filtfilt
 from scipy.integrate import *
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -20,6 +21,11 @@ class MainWindow(QWidget, Ui_Form):
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icons/LOGO.png'))
         self.setWindowTitle("Simulador Spreeta")
+        """     
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.showMaximized()
+        """
 
         # Declaração da área de plotagem das figuras:
         font=dict(size=4, family="Sans-Serif")
@@ -56,6 +62,9 @@ class MainWindow(QWidget, Ui_Form):
 
         #Eventos
 
+        self.btn_close.clicked.connect(self.close)    # close window
+        self.btn_minimizar.clicked.connect(
+            self.showMinimized)    # minimize window
         # Calibração 
         self.btn_Dry_flow_cell.clicked.connect(self.dryCellCalibration)
         self.btn_Wet_flow_cell.clicked.connect(self.wetCellCalibration)
@@ -135,13 +144,12 @@ class MainWindow(QWidget, Ui_Form):
         
         signal_ref_txt = pd.read_csv('Reference_data.csv', encoding='latin1')
         pixel_ = signal_ref_txt['Pixel #']
-        angle_ = signal_ref_txt['Angle']
         signal_ = signal_ref_txt['Signal']
-        noise_ref = signal_ref_txt['Noise_Ref']
        
         self.figure_raw.clear()
-        plt.plot(angle_, (signal_/noise_ref), label='Signal', linewidth=0.5)
+        plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
         plt.grid(alpha=0.5)
+        self.figure_raw.tight_layout()
         
         self.canvas_raw.draw()
     
@@ -159,9 +167,9 @@ class MainWindow(QWidget, Ui_Form):
         
 
         self.figure_raw.clear()
-        plt.plot(pixel_, (signal_), label='Signal', linewidth=0.5)
+        plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
         plt.grid(alpha=0.5)
-        
+        self.figure_raw.tight_layout()
         self.canvas_raw.draw()
 
 
@@ -202,6 +210,11 @@ class MainWindow(QWidget, Ui_Form):
                 
             signal_filtered = self.butter_lowpass_filter(data=signal_, cutoff=2, fs=30, order=5 )
 
+            
+            self.printParameters(signal_filtered, angle_)
+
+
+
             self.plotSprCurve(angle_, signal_filtered)
             self.plotSampleCurve(angle_, signal_)
             self.plotRawCurve(i)
@@ -220,6 +233,42 @@ class MainWindow(QWidget, Ui_Form):
         b, a = butter(order, normal_cutoff, btype='low', analog=False)
         y = filtfilt(b, a, data)
         return y
+    
+    def printParameters(self, signal, angle):
+        signal = list(signal)
+        id_resonance = signal.index(min(signal))
+        pixel = [ i for i in arange(0,128, 1)]
+        pixel_res = pixel[id_resonance]
+
+        res_angle = self.returnAngleRes(signal, angle, id_resonance)
+
+        ref_index = self.returnRefractiveIndex(res_angle)
+
+        self.min_pixel.setText(f"{pixel_res}")
+        self.resonance_angle.setText(f"{res_angle:.6f}")
+        self.refractive_index.setText(f"{ref_index:.6f}")
+        
+    def returnAngleRes(self, signal, angle, min):
+        # Ajuste polinomial e localização do mínimo da curva
+        
+        x = angle[(min-10):(min+10)]
+        y = signal[(min-10):(min+10)]
+
+        z = polyfit(x, y, 4)
+        y2 = poly1d(z)
+
+        res_angle = optimize.fminbound(y2, angle[(min+10)] ,angle[(min-10)] ) 
+        
+        return float(f"{res_angle}")
+    
+    def returnRefractiveIndex(self, angle_res):
+        n_au = sl.set_index(13, 830*1E-9)
+        emr = real(n_au)**2 - imag(n_au)**2
+        
+        index_analyte = sqrt((emr*(1.4826 * sin(angle_res*pi/180))**2)/
+        (emr-(1.4826*sin(angle_res*pi/180))**2))
+        
+        return float(index_analyte) 
     
     def plotSampleCurve(self, _angle, _signal):
         self.figure_sample.clear()
