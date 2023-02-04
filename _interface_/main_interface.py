@@ -14,6 +14,8 @@ import sys
 import matplotlib.pyplot as plt
 import time
 
+REF = 0
+
 class MainWindow(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
@@ -45,6 +47,13 @@ class MainWindow(QWidget, Ui_Form):
         self.verticalLayout.addWidget(self.canvas_sensorgram )
         self.gridLayout_3.addWidget(self.toolbar_sensorgram , 2, 0, 1, 2)
 
+        # Raw signal
+        self.figure_raw = plt.figure(dpi=250)
+        self.canvas_raw = FigureCanvas(self.figure_raw)
+        self.toolbar_raw = NavigationToolbar2QT(self.canvas_raw , self)
+        self.verticalLayout_4.addWidget(self.canvas_raw )
+        self.gridLayout_5.addWidget(self.toolbar_raw, 2, 0, 1, 3)
+
         #Eventos
 
         # Calibração 
@@ -54,7 +63,7 @@ class MainWindow(QWidget, Ui_Form):
         # Atualização do indice de refração
         self.refractive_index_analyte.valueChanged.connect(lambda: self.changeSlider(self.refractive_index_analyte, self.refractive_index_slider))
         self.refractive_index_slider.valueChanged.connect(lambda: self.changeSpinBox(self.refractive_index_analyte, self.refractive_index_slider))
-
+        self.cbox_format.currentIndexChanged.connect(self.changeFormat)
 
 
     def dryCellCalibration(self):
@@ -66,10 +75,10 @@ class MainWindow(QWidget, Ui_Form):
             time.sleep(0.01)
             self.pgsBar_dry_cell.setValue(i+1)
     
-    
     def wetCellCalibration(self):
         self.btn_Wet_flow_cell.setEnabled(False)
         self.btn_Wet_flow_cell.setStyleSheet("background-color: rgb(190, 190, 190); color:rgb(90,90,90)")
+        self.setSignalReferenceWet()
         for i in range(100):
             time.sleep(0.01)
             self.pgsBar_wet_cell.setValue(i+1)
@@ -79,7 +88,6 @@ class MainWindow(QWidget, Ui_Form):
     
     def changeSlider(self, spin, slider):
         slider.setValue(int(spin.value()*1E6))
-
 
     def setSignalReference(self):
         dados = pd.read_csv("experimento_H2O.csv", encoding='latin1')
@@ -137,6 +145,63 @@ class MainWindow(QWidget, Ui_Form):
         arquivo.close()
         
         self.plotReference()
+    
+    def setSignalReferenceWet(self):
+        dados = pd.read_csv("experimento_H2O.csv", encoding='latin1')
+        dados4 = pd.read_csv("signal reference.csv", encoding='latin1')
+
+        pixel = dados['pixel']
+        signal_ref = dados4['Reference']
+
+        mn = min(signal_ref)
+        mx = max(signal_ref)
+
+        noise_ref = []
+        noise_term = []
+
+        theta_i = []
+
+        for i in pixel:
+            theta_i.append((3.1522 * 1E-5 * i**2) - (0.0661 * i) + 73.4533)
+            a, b = uniform(mn,mx), gauss(mean(0), 0.05)
+            noise_ref.append(a)
+            noise_term.append(b)
+
+        # Declaração da função gaussiana que modela o espalhamento do Led
+        dc = 0.785
+        a = 1/(sqrt(2*pi))
+
+        p = lambda w_i: (dc + (a/2.7)* exp(-(((w_i - 845)/30)**2))) * (dc + (a/2.7)* exp(-(((w_i - 853)/15)**2))) * (1.01 + (a/3)* exp(-(((w_i - 845)/42)**2)))
+
+        # Definição de função para calcular o indice de refração
+        def set_index_3(lambda_i, material):
+            
+            ref_index = (sl.set_index(material, lambda_i*1E-9))
+
+            return ref_index
+
+        idx = lambda w_i, material: set_index_3(w_i, material)
+
+        r = lambda theta, lambda_i: self.reflectivity(3, [1, 50*1E-9, 1], [idx(lambda_i, 21), idx(lambda_i, 13), idx(lambda_i,16)], theta*pi/180, lambda_i*1e-9)
+        
+        def f(w_i, theta):
+            return (r(theta, w_i)*p(w_i))
+
+        integrals = [[a, quad(f,  745, 935, args=(a))[0]] for a in linspace(73.6872,65.80896, 128)]
+
+        reflectancia= array(integrals).T[1] / quad(p, 745, 935)[0]
+
+        reflectancia_norm = reflectancia/max(reflectancia)
+
+        reflectancia_norm = (reflectancia_norm * noise_ref)+ noise_term
+
+        arquivo = open('Reference_data_wet.csv','w')
+        arquivo.write("Pixel #,Angle,Signal,Noise_Ref")
+        for i in range(len(theta_i)):
+            arquivo.write(f"\n{pixel[i]},{theta_i[i]},{reflectancia_norm[i]},{noise_ref[i]}")
+        arquivo.close()
+        
+        self.plotReferenceWet()
 
     def reflectivity(self, nLayers, d,  index, theta_i, wavelenght):
 
@@ -176,22 +241,15 @@ class MainWindow(QWidget, Ui_Form):
         return a # Reflectance - TM polarization
 
     def plotReference(self):
+        global REF
+        REF = 1
         
-        # Raw signal
-        self.figure_raw = plt.figure(dpi=250)
-        self.canvas_raw = FigureCanvas(self.figure_raw)
-        self.toolbar_raw = NavigationToolbar2QT(self.canvas_raw , self)
-        self.verticalLayout_4.removeItem(self.verticalSpacer_4)
-        self.verticalLayout_4.addWidget(self.canvas_raw )
-        self.gridLayout_5.addWidget(self.toolbar_raw, 2, 0, 1, 3)
-
-
-        font=dict(size=5, family="Sans-Serif")
+        font=dict(size=4, family="Sans-Serif")
         plt.rc('font', **font)
 
-        plt.subplots_adjust(left=0.160,
-            bottom=0.195, 
-            right=0.930, 
+        plt.subplots_adjust(left=0.125,
+            bottom=0.150, 
+            right=0.960, 
             top=0.950, 
             wspace=0.1, 
             hspace=0.2)
@@ -203,12 +261,55 @@ class MainWindow(QWidget, Ui_Form):
         noise_ref = signal_ref_txt['Noise_Ref']
         
         if self.cbox_format.currentText() == "Signal vs. Pixel":
-            plt.plot(pixel_, signal_, '--', label= 'Signal')
+            self.figure_raw.clear()
+            plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
+            plt.grid(alpha=0.5)
         else:
-            plt.plot(angle_, (signal_/noise_ref),'--', label= 'Signal Ref TXT' )
+            self.figure_raw.clear()
+            plt.plot(angle_, (signal_/noise_ref), label= 'Signal Ref TXT', linewidth=0.5)
+            plt.grid(alpha=0.5)
+        
+        self.canvas_raw.draw()
+    
+    def plotReferenceWet(self):
+        global REF
+        REF = 2
+        
+        font=dict(size=4, family="Sans-Serif")
+        plt.rc('font', **font)
+
+        plt.subplots_adjust(left=0.125,
+            bottom=0.150, 
+            right=0.960, 
+            top=0.950, 
+            wspace=0.1, 
+            hspace=0.2)
+
+        signal_ref_txt = pd.read_csv('Reference_data_wet.csv', encoding='latin1')
+        pixel_ = signal_ref_txt['Pixel #']
+        angle_ = signal_ref_txt['Angle']
+        signal_ = signal_ref_txt['Signal']
+        noise_ref = signal_ref_txt['Noise_Ref']
+        
+        if self.cbox_format.currentText() == "Signal vs. Pixel":
+            self.figure_raw.clear()
+            plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
+            plt.grid(alpha=0.5)
+        else:
+            self.figure_raw.clear()
+            plt.plot(angle_, (signal_/noise_ref), label= 'Signal Ref TXT', linewidth=0.5)
+            plt.grid(alpha=0.5)
         
         self.canvas_raw.draw()
 
+
+    def changeFormat(self):
+        if REF == 1:
+            self.plotReference()
+        elif REF == 2:
+            self.plotReferenceWet()
+        else:
+            pass
 
 
 if __name__ == "__main__":

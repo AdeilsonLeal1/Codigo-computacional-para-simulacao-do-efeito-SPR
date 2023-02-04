@@ -418,8 +418,6 @@ class Ui_Form(object):
         self.gridLayout_5.addWidget(self.cbox_format, 0, 2, 1, 1)
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.verticalSpacer_4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(self.verticalSpacer_4)
         self.gridLayout_5.addLayout(self.verticalLayout_4, 1, 0, 1, 3)
         self.gridLayout.addWidget(self.frame_Raw_signal, 2, 0, 1, 1)
         self.frame_Sample = QtWidgets.QFrame(self.frame_graphs)
