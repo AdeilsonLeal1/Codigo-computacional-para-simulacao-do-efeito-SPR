@@ -38,7 +38,7 @@ def p_2(i):
     return a
 
 
-"""ACF = (pi/180)  # Angle Conversion Factor.
+ACF = (pi/180)  # Angle Conversion Factor.
 
 thickness = [1, 50*1E-9, 1]  # Thickness of each layer
 material = [1, 13, 16]   # Material of each layer
@@ -46,7 +46,7 @@ R_Tm = []       # Stores lists with reflectivity curves for each of the interact
 ref_index = [complex(1.4826,0), complex(0,0), complex(1.33,0)]  # Refractive index of the layers
 n_layers=3
 
-lambda_i = arange(400, 1000, 1) * 1e-9 
+lambda_i = arange(740, 940, 1) * 1e-9 
 
 # Starting and ending angle
 a1 = 65.5090 * ACF 
@@ -77,10 +77,11 @@ for theta in theta_i:
 
 R_Tm.append(r_TM)
 
-plt.plot(theta_i/ACF, R_Tm[0])
-tools.data_processing(ref_index)"""
-
-
+plt.subplots(dpi = 200)
+plt.plot(theta_i/ACF, R_Tm[0], label ='Com espalhamento')
+plt.xlabel("Ângulo de incidância (°)")
+plt.ylabel("Reflectância normalizada")
+tools.data_processing(ref_index)
 
 
 
@@ -112,23 +113,26 @@ lambda_i2 = dset2['l'] + dset2['l2']/10000
 
 y=[]
 y2 = []
-x = list(linspace(400, 1000, 300))
+x = list(linspace(740, 940, 300))
 
 for i in x:
     a = p(i)
     y2.append(p_2(i))
     y.append(a)
 
+fig, ax = plt.subplots(dpi=200)
 plt.plot(lambda_i, energy, label='base')
 plt.plot(x, y, label='aprox')
-plt.plot(x, y2, label='aprox2')
+#plt.plot(x, y2, label='aprox2')
+plt.xlabel(f"Comprimento de onda - {chr(955)} - (nm)")
+plt.ylabel(f"Intensidade normalizada")
 plt.legend()
 plt.grid()
-plt.show()
+plt.show()"""
 
-"""
 
-Idc = float(1.33000)
+
+"""Idc = float(1.33000)
 
 tau = 200
 
@@ -161,4 +165,4 @@ y = [1.33 for i in x]
 plt.plot(x, ri, '--')
 plt.plot(x, y)
 plt.yticks(arange(1.329, 1.334, 0.001))
-plt.show()
+plt.show()"""

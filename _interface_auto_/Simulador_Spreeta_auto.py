@@ -630,7 +630,7 @@ class Ui_Form(object):
         self.label_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:700;\">Sensorgram: </span><span style=\" font-size:11pt;\">Refractive index</span></p></body></html>"))
         self.btn_add_label.setText(_translate("Form", "Add Label"))
         self.label_3.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:700;\">SPR Curve: </span><span style=\" font-size:11pt;\">Processed</span></p></body></html>"))
-        self.label_10.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:700;\">Raw signal</span></p></body></html>"))
+        self.label_10.setText(_translate("Form", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:700;\">Sample: </span><span style=\" font-size:11pt;\">Signal (V) vs. Pixel</span></p></body></html>", None))
         self.cbox_channel.setItemText(0, _translate("Form", "Channel #1"))
         self.cbox_channel.setItemText(1, _translate("Form", "Channel #2"))
         self.cbox_channel.setItemText(2, _translate("Form", "Channel #3"))

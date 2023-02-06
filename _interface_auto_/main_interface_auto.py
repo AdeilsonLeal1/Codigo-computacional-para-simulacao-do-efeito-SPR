@@ -142,9 +142,9 @@ class MainWindow(QWidget, Ui_Form):
                             hspace=0.2,
                             wspace=0.2)
         
-        signal_ref_txt = pd.read_csv('Reference_data.csv', encoding='latin1')
+        signal_ref_txt = pd.read_csv('Reference_data_wet.csv', encoding='latin1')
         pixel_ = signal_ref_txt['Pixel #']
-        signal_ = signal_ref_txt['Signal']
+        signal_ = signal_ref_txt['Noise_Ref']
        
         self.figure_raw.clear()
         plt.plot(pixel_, signal_, label='Signal', linewidth=0.5)
@@ -174,7 +174,6 @@ class MainWindow(QWidget, Ui_Form):
         self.figure_raw.tight_layout()
         self.canvas_raw.draw()
 
-
     def startMonitoring(self):
         
         signal_ref_txt = pd.read_csv('Reference_data_wet.csv', encoding='latin1')
@@ -196,12 +195,12 @@ class MainWindow(QWidget, Ui_Form):
         self.ax.set_yticks(arange(0, 1.2, 0.2))
         self.figure_sample.tight_layout()
         self.canvas_sample.draw()
-        time.sleep(1)
-
+        t = []
+        self.ri_analyte = []
 
         def updateGraph(i):
             angle_, signal_ = [], []
-
+            t.append(i)
             signal_sensor = pd.read_csv('Sensor_data.txt', encoding='latin1', delimiter='\t')
             a = signal_sensor['Angle'][i].replace('[', '').replace(']', '').replace(' ', '')
             s = signal_sensor['SPR Curve'][i].replace('[', '').replace(']', '').replace(' ', '')
@@ -215,19 +214,20 @@ class MainWindow(QWidget, Ui_Form):
 
             
             self.printParameters(signal_filtered, angle_)
-
+            
             self.plotSprCurve(angle_, signal_filtered)
             self.plotSampleCurve(angle_, signal_)
             self.plotRawCurve(i)
+            self.plotSensorgramCurve(t, self.ri_analyte)
 
             self.canvas_sample.draw()
             self.canvas_spr.draw()
             self.canvas_raw.draw()
-            time.sleep(1)
+            self.canvas_sensorgram.draw()
+            self.figure_sensorgram.clear()
         
-        anim = FuncAnimation(self.figure_spr, updateGraph, interval=1000/30, frames= arange(0, 2700, 1))
-
-    
+        anim = FuncAnimation(self.figure_spr, updateGraph, interval=1, frames= arange(0, 450, 1))
+   
     def butter_lowpass_filter(self, data, cutoff, fs, order):
         normal_cutoff = cutoff / (0.5 * fs)
         # Get the filter coefficients 
@@ -249,7 +249,6 @@ class MainWindow(QWidget, Ui_Form):
         self.resonance_angle.setText(f"{res_angle:.6f}")
         self.refractive_index.setText(f"{ref_index:.6f}")
 
-
     def returnAngleRes(self, signal, angle, min):
         # Ajuste polinomial e localização do mínimo da curva
         
@@ -264,15 +263,17 @@ class MainWindow(QWidget, Ui_Form):
         return float(f"{res_angle}")
     
     def returnRefractiveIndex(self, angle_res):
-        n_au = sl.set_index(13, 830*1E-9)
+        n_au = sl.set_index(13, 850*1E-9)
         emr = real(n_au)**2 - imag(n_au)**2
         
         index_analyte = sqrt((emr*(1.4826 * sin(angle_res*pi/180))**2)/
         (emr-(1.4826*sin(angle_res*pi/180))**2))
+        self.ri_analyte.append(index_analyte)
         
         return float(index_analyte) 
     
     def plotSensorgramCurve(self, i, index):
+        
         self.figure_sensorgram.clear()
         plt.subplots_adjust(top=0.939,
                             bottom=0.218,
@@ -281,9 +282,9 @@ class MainWindow(QWidget, Ui_Form):
                             hspace=0.2,
                             wspace=0.2)
 
-        ax2 = self.figure_sample.add_subplot()
-        ax2.plot(i, index, linewidth=0.5)
-        ax2.grid(alpha=0.5)
+        ax3 = self.figure_sensorgram.add_subplot()
+        ax3.plot(i, index, linewidth=0.5)
+        ax3.grid(alpha=0.5)
         self.figure_sensorgram.tight_layout()
 
     def plotSampleCurve(self, _angle, _signal):
