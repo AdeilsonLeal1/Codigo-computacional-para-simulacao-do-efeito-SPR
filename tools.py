@@ -77,11 +77,11 @@ def data_processing(ref_index):
     signal_filtered = butter_lowpass_filter(data=refletivity_processing['Reflectivity'], cutoff=2, fs=30, order=5 )
 
     plt.subplots(dpi=200)
-    #plt.plot(refletivity['Angle'], refletivity['Reflectivity'], label="Sem espalhamento")
+    plt.plot(refletivity['Angle'], refletivity['Reflectivity'], label="Sem espalhamento")
     plt.plot(refletivity_processing['Angle'], refletivity_processing['Reflectivity'], label="Sinal Ruidoso")
     plt.plot(refletivity_processing['Angle'], signal_filtered, label="Sinal filtrado - FPB-Butterworth")
     plt.plot(refletivity_processing['Angle'], refletivity_processing['MME8'], label="Sinal filtrado - MME")
-    #plt.plot(theta, signal, 'o', label="Experimento")
+    plt.plot(theta, signal, 'o', label="Experimento")
 
     plt.legend()
     plt.grid()
