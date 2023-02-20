@@ -10,36 +10,17 @@ import tools
 
 from scipy import *
 import sympy as smp
+from scipy.interpolate import interp1d 
 
+dset1 = pd.read_csv("Default Dataset.csv", encoding='latin1')
+dset1.dropna()
 
-def p(i):
-    dc = 0.79
-    a = 1/(sqrt(2*pi))
+energy = dset1['E_2']/100000
+lambda_i = dset1['l'] + dset1['L_2']/100000
 
-    frac1 = (i - 845)/30
-    frac2 = (i - 853)/15
-    frac3 = (i - 845)/42
+p =  interp1d(lambda_i, energy, kind='cubic')
 
-    f = dc + (a/2.7)* exp(-(frac1**2))
-    g = dc + (a/2.7)* exp(-(frac2**2))
-    h = 1.01 + (a/3)* exp(-(frac3**2))
-
-    a = f*g*h
-    return a
-
-def p_2(i):
-    dc = 0.632
-    a = 1/(sqrt(2*pi))
-    b = 30
-
-    
-    f = dc + (a/1.1) * exp(-((i - 850)**2)/(b**2))
-
-    a = f
-    return a
-
-
-"""ACF = (pi/180)  # Angle Conversion Factor.
+ACF = (pi/180)  # Angle Conversion Factor.
 
 thickness = [1, 50*1E-9, 1]  # Thickness of each layer
 material = [1, 13, 16]   # Material of each layer
@@ -47,7 +28,7 @@ R_Tm = []       # Stores lists with reflectivity curves for each of the interact
 ref_index = [complex(1.4826,0), complex(0,0), complex(1.33,0)]  # Refractive index of the layers
 n_layers=3
 
-lambda_i = arange(740, 940, 1) * 1e-9 
+lambda_i = arange(750, 935, 1) * 1e-9 
 
 # Starting and ending angle
 a1 = 65.5090 * ACF 
@@ -83,11 +64,11 @@ plt.plot(theta_i/ACF, R_Tm[0], label ='Com espalhamento')
 plt.xlabel("Ângulo de incidância (°)")
 plt.ylabel("Reflectância normalizada")
 tools.data_processing(ref_index)
-"""
 
 
 
-dados = pd.read_csv("experimento_H2O.csv", encoding='latin1')
+
+"""dados = pd.read_csv("experimento_H2O.csv", encoding='latin1')
 pixel = dados['pixel']
 #pixel = pixel[::-1]
 signal = dados[' signal']
@@ -98,7 +79,7 @@ for i in pixel:
 
 plt.plot(theta, signal, '--')
 plt.show()
-
+"""
 """
 dset2 = pd.read_csv("Default Dataset 2.csv", encoding='latin1')
 dset1 = pd.read_csv("Default Dataset.csv", encoding='latin1')

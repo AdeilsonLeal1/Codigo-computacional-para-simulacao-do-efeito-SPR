@@ -49,13 +49,13 @@ if mod_int == 1:
           "\n## Setting angular interrogation mode:\n\n ")
 
     # Incident wavelength
-    lambda_i = 830 * 1e-9 ##float(input("Incident wavelength (nm): ")) * 1e-9
+    lambda_i = 850 * 1e-9 ##float(input("Incident wavelength (nm): ")) * 1e-9
 
     # Starting and ending angle
     a1 = 65.5090 * ACF #float(input("Starting angle value (degress): "))*ACF
     a2 = 73.3877 * ACF #float(input("Ending angle value (degress): "))*ACF
 
-    theta_i = np.linspace(a1, a2, 128)  # Array with angles of incidence
+    theta_i = np.linspace(a1, a2, 128) # Array with angles of incidence
 
     #  Defining the structure
     n_layers = 3#int(

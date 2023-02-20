@@ -390,6 +390,60 @@ class Ui_Form(object):
         self.refractive_index.setObjectName("refractive_index")
         self.refractive_index.setStyleSheet(LINEEDITSTYLE)
         self.gridLayout_7.addWidget(self.refractive_index, 2, 1, 1, 1)
+
+        self.label_17 = QtWidgets.QLabel(self.gb_Results)
+        self.label_17.setObjectName(u"label_17")
+        sizePolicy.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
+        self.label_17.setSizePolicy(sizePolicy)
+        self.label_17.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label_17.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+
+        self.gridLayout_7.addWidget(self.label_17, 3, 0, 1, 1)
+
+        self.curve_width = QtWidgets.QLineEdit(self.gb_Results)
+        self.curve_width.setObjectName(u"curve_width")
+        self.curve_width.setText("")
+        self.curve_width.setStyleSheet(LINEEDITSTYLE)
+        self.curve_width.setReadOnly(True)
+
+        self.gridLayout_7.addWidget(self.curve_width, 3, 1, 1, 1)
+
+        self.label_18 = QtWidgets.QLabel(self.gb_Results)
+        self.label_18.setObjectName(u"label_18")
+        sizePolicy.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
+        self.label_18.setSizePolicy(sizePolicy)
+        self.label_18.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label_18.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+
+        self.gridLayout_7.addWidget(self.label_18, 4, 0, 1, 1)
+
+        self.Asymmetry = QtWidgets.QLineEdit(self.gb_Results)
+        self.Asymmetry.setObjectName(u"Asymmetry")
+        self.Asymmetry.setText("")
+        self.Asymmetry.setStyleSheet(LINEEDITSTYLE)
+        self.Asymmetry.setReadOnly(True)
+
+        self.gridLayout_7.addWidget(self.Asymmetry, 4, 1, 1, 1)
+
+        self.label_19 = QtWidgets.QLabel(self.gb_Results)
+        self.label_19.setObjectName(u"label_19")
+        sizePolicy.setHeightForWidth(self.label_19.sizePolicy().hasHeightForWidth())
+        self.label_19.setSizePolicy(sizePolicy)
+        self.label_19.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label_19.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        
+        self.gridLayout_7.addWidget(self.label_19, 5, 0, 1, 1)
+
+        self.baseline = QtWidgets.QLineEdit(self.gb_Results)
+        self.baseline.setObjectName(u"baseline")
+        self.baseline.setText("")
+        self.baseline.setStyleSheet(LINEEDITSTYLE)
+        self.baseline.setReadOnly(True)
+
+        self.gridLayout_7.addWidget(self.baseline, 5, 1, 1, 1)
+
+
+
         self.verticalLayout_2.addWidget(self.gb_Results)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem3)
@@ -625,8 +679,12 @@ class Ui_Form(object):
         self.btn_view_data.setText(_translate("Form", "View data"))
         self.gb_Results.setTitle(_translate("Form", "Results"))
         self.label_13.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Min pixel:</span></p></body></html>"))
-        self.label_14.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Resonace angle:</span></p></body></html>"))
-        self.label_15.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Refractive index:</span></p></body></html>"))
+        self.label_14.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Resonace angle (°):</span></p></body></html>"))
+        self.label_15.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Refractive index (RIU):</span></p></body></html>"))
+        self.label_17.setText(_translate("Form", u"<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Curve width - </span><span style=\" font-size:10pt; font-weight:700;\">\u0393 (°):</span></p></body></html>", None))
+        self.label_18.setText(_translate("Form", u"<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">Asymmetry:</span></p></body></html>", None))
+        self.label_19.setText(_translate("Form", u"<html><head/><body><p><span style=\" font-size:10pt; font-weight:700;\">BaseLine:</span></p></body></html>", None))
+        
         self.label_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:700;\">Sensorgram: </span><span style=\" font-size:11pt;\">Refractive index</span></p></body></html>"))
         self.btn_add_label.setText(_translate("Form", "Add Label"))
         self.label_3.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:700;\">SPR Curve: </span><span style=\" font-size:11pt;\">Processed</span></p></body></html>"))

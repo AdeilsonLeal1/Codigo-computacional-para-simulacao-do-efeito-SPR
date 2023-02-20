@@ -1,19 +1,23 @@
-from scipy import optimize
-from scipy.signal import butter, lfilter, freqz, filtfilt
-from scipy.integrate import *
+################################################################################################
+#             Interface do para controle e processamnto dos dados do sensor SPREETA            #
+################################################################################################
+# Importação dos módulos necessários
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QWidget
-import pandas as pd
-from Simulador_Spreeta_auto import Ui_Form
-from numpy import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.animation import FuncAnimation
-import Setting_Layers as sl
+from Simulador_Spreeta_auto import Ui_Form
+from numpy import *
+from numpy.polynomial import Polynomial
+from scipy import optimize
+from scipy.signal import butter, filtfilt
+from scipy.integrate import *
 import sys
+import pandas as pd
 import matplotlib.pyplot as plt
 import time
-
+import Setting_Layers as sl
 
 class MainWindow(QWidget, Ui_Form):
     def __init__(self):
@@ -210,7 +214,7 @@ class MainWindow(QWidget, Ui_Form):
             s = s.split(',')
             signal_ = [float(j) for j in s]
                 
-            signal_filtered = self.butter_lowpass_filter(data=signal_, cutoff=2, fs=30, order=5 )
+            signal_filtered = self.butter_lowpass_filter(data=signal_, cutoff=2, fs=40, order=5 )
 
             
             self.printParameters(signal_filtered, angle_)
@@ -241,24 +245,44 @@ class MainWindow(QWidget, Ui_Form):
         pixel = [ i for i in arange(0,128, 1)]
         pixel_res = pixel[id_resonance]
 
-        res_angle = self.returnAngleRes(signal, angle, id_resonance)
+        x1, x2, self.LB, idx1, idx2= self.defBaseLine(signal, angle)    
+
+        res_angle = self.returnAngleRes(signal, angle, id_resonance, self.LB, idx1, idx2)
 
         ref_index = self.returnRefractiveIndex(res_angle)
 
+        C_r = x2 - res_angle
+        C_l = res_angle - x1
+    
         self.min_pixel.setText(f"{pixel_res}")
         self.resonance_angle.setText(f"{res_angle:.6f}")
         self.refractive_index.setText(f"{ref_index:.6f}")
+        self.curve_width.setText(f"{x2-x1:.6f}")
+        self.Asymmetry.setText(f"{(C_r/C_l):.6f}")
+        self.baseline.setText(f"{self.LB:.6f}")
 
-    def returnAngleRes(self, signal, angle, min):
+    def returnAngleRes(self, signal, angle, min, LB, idx1, idx2):
         # Ajuste polinomial e localização do mínimo da curva
         
-        x = angle[(min-10):(min+10)]
-        y = signal[(min-10):(min+10)]
+        x = angle[idx2:idx1+1]
+        y = signal[idx2:idx1+1]
+        
+        # Pelo método do centroide
+        soma_num = 0
+        soma_den = 0
+        for i in range(len(x)):
+            b = (LB - y[i]) * x[i]
+            c = (LB - y[i])
+            soma_num = soma_num + b
+            soma_den = soma_den + c
 
-        z = polyfit(x, y, 4)
-        y2 = poly1d(z)
+        res_angle = soma_num/soma_den
 
-        res_angle = optimize.fminbound(y2, angle[(min+10)] ,angle[(min-10)] ) 
+        """
+        # Pelo método de localização por minimização da função 
+        z = Polynomial.fit(x, y, 4, domain=[-1, 1])
+        res_angle = optimize.fminbound(z, angle[(min+10)] ,angle[(min-10)] ) 
+        """
         
         return float(f"{res_angle}")
     
@@ -298,6 +322,7 @@ class MainWindow(QWidget, Ui_Form):
 
         ax2 = self.figure_sample.add_subplot()
         ax2.plot(_angle, _signal, linewidth=0.5)
+        ax2.plot([_angle[0], _angle[-1]], [self.LB, self.LB], '--r', linewidth=0.5)
         ax2.grid(alpha=0.5)
         ax2.set_yticks(arange(0, 1.2, 0.2))
         self.figure_sample.tight_layout()
@@ -312,6 +337,7 @@ class MainWindow(QWidget, Ui_Form):
                             wspace=0.2)
         ax = self.figure_spr.add_subplot()
         ax.plot(_angle, _signal, linewidth=0.5)
+        ax.plot([_angle[0], _angle[-1]], [self.LB, self.LB], '--r', linewidth=0.5)
         ax.set_yticks(arange(0, 1.2, 0.2))
         ax.grid(alpha=0.5)
         self.figure_spr.tight_layout()
@@ -340,6 +366,37 @@ class MainWindow(QWidget, Ui_Form):
         ax.grid(alpha=0.5)
         self.figure_raw.tight_layout()
        
+    def defBaseLine(self, curve, theta_i):
+        y = list(curve)
+
+        id_min = y.index(min(y))
+
+        y_left = y[0:id_min]
+        y_right = y[id_min-1:len(y)]
+
+        y_mx_left = max(y_left)
+        y_mn_left = min(y_left)
+
+        y_mx_right = max(y_right)
+        y_mn_right = min(y_right)
+
+        y_med_left = (y_mx_left + y_mn_left)/2
+        y_med_right = (y_mx_right + y_mn_right)/2
+
+        y_med = (y_med_left + y_med_right)/2
+
+        signs = sign(add(y, -y_med))
+
+        zero_crossings = (signs[0:-2] != signs[1:-1])
+        zero_crossings_i = where(zero_crossings)[0]
+
+        id = zero_crossings_i[-1]
+        j = zero_crossings_i[-2]
+
+        x1 = theta_i[id] + (theta_i[id+1] - theta_i[id]) * ((y_med - y[id]) / (y[id+1] - y[id]))
+        x2 = theta_i[j] + (theta_i[j+1] - theta_i[j]) * ((y_med - y[j]) / (y[j+1] - y[j]))
+
+        return x1, x2, y_med, id, j
 
 
 if __name__ == "__main__":

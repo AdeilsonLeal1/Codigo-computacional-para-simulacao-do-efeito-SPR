@@ -12,7 +12,6 @@ def reflectivity(nLayers, d,  index, theta_i, wavelenght):
 
     b = []  # b_j -> Phase shift in each layer
     q_TM = []  # q_TM_j -> Admittance in TM polarization
-
     M_Tm = []  # M_Tm_j -> Transfer matrix between each layer - TM polarization
 
     for layer in range(nLayers):
